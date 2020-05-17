@@ -1,19 +1,8 @@
-﻿#include "test.h"
-#include <time.h>
-#include <iostream>
+﻿#include "board.h"
+#include "test.h"
 
-using namespace std;
-
-//生成棋盘,10s
-void test_case1()
-{
-    CScene scene;
-
-    time_t begin, end;
-    time(&begin);
-    scene.generate();
-    time(&end);
-
-    scene.show();
-    cout << end - begin << endl;
+void test_case() {
+    Board board;
+    board.generate();
+    board.show();
 }

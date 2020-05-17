@@ -4,17 +4,13 @@
 #include "block.h"
 #include "color.h"
 
-CBlock::CBlock()
-    : _count(0) {}
+Block::Block(): count_(0) {}
 
-bool CBlock::isValid() const
-{
-    assert(MAX_COUNT == _count);
+bool Block::isValid() const {
+    assert(MAX_COUNT_ == count_);
 
-    for (int i = 0; i < _count - 1; ++i)
-    {
-        for (int j = i + 1; j < _count; ++j)
-        {
+    for (size_t i = 0; i < count_ - 1; ++i) {
+        for (size_t j = i + 1; j < count_; ++j) {
             if (UNSELECTED == _numbers[i]->value || UNSELECTED == _numbers[j]->value)
                 continue;
 
@@ -26,9 +22,9 @@ bool CBlock::isValid() const
     return true;
 }
 
-bool CBlock::isFull() const
+bool Block::isFull() const
 {
-    for (int i = 0; i < _count; ++i)
+    for (int i = 0; i < count_; ++i)
     {
         point_value_t *p_point_value = _numbers[i];
         if (nullptr == p_point_value || UNSELECTED == p_point_value->value)
@@ -37,16 +33,13 @@ bool CBlock::isFull() const
     return true;
 }
 
-void CBlock::print() const
-{
+void Block::print() const {
     std::cout << "| ";
-    for (int i = 0; i < _count; ++i)
-    {
+    for (int i = 0; i < count_; ++i) {
         auto number = *(_numbers[i]);
         if (0 == number.value)
             std::cout << ' ' << " | ";
-        else
-        {
+        else {
             if (number.state == State::ERASED)
                 std::cout << Color::Modifier(Color::FG_GREEN) << number.value << Color::Modifier(Color::RESET) << " | ";
             else
@@ -56,8 +49,7 @@ void CBlock::print() const
     std::cout << std::endl;
 }
 
-void CBlock::push_back(point_value_t *point)
-{
+void Block::push_back(point_value_t *point) {
     assert(nullptr != point);
-    _numbers[_count++] = point;
+    _numbers[count_++] = point;
 }

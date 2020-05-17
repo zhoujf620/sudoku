@@ -1,8 +1,8 @@
 ﻿#include <iostream>
 #include <string>
 #include <cstring>
-#include "scene.h"
-#include "input.h"
+#include "board.h"
+#include "setup.h"
 #include "test.h"
 
 #define _TEST_ 0
@@ -18,30 +18,28 @@ static void printHelp() {
               << std::endl;
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 #if _TEST_
-    test_case1();
+    test_case();
     getchar();
 #else
-    CScene scene;
+    Board board;
 
     if (argc == 1) {
         int eraseGridNumber = inputDifficulty();
-        scene.generate();
-        scene.eraseRandomGrids(eraseGridNumber);
+        board.generate();
+        board.eraseRandomGrids(eraseGridNumber);
     }
     else if (argc == 3 && !strcmp(argv[1], "-l")) {
         // load saved game progress
-        scene.load(argv[2]);
+        board.load(argv[2]);
     }
     else {
         printHelp();
         return 0;
     }
 
-    scene.play();
+    board.play();
 #endif
-
     return 0;
 }

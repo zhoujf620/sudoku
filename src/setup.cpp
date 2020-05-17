@@ -5,26 +5,21 @@
 #include "utility.inl"
 
 // return number of grids to be erased
-int inputDifficulty()
-{
+int inputDifficulty() {
     cls();
 
     std::string cmd;
-    while (1)
-    {
+    while (1) {
         std::cout << "设置难度：1简单 2普通 3困难" << std::endl;
-
         std::cin >> cmd;
+        GameLevel level = static_cast<GameLevel>(std::stoi(cmd));
 
-        Difficulty difficulty = static_cast<Difficulty>(std::stoi(cmd));
-
-        switch (difficulty)
-        {
-        case Difficulty::EASY:
+        switch (level) {
+        case GameLevel::EASY:
             return 20;
-        case Difficulty::NORMAL:
+        case GameLevel::NORMAL:
             return 35;
-        case Difficulty::HARD:
+        case GameLevel::HARD:
             return 50;
         default:
             std::cout << "输入错误！" << std::endl;

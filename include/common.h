@@ -3,34 +3,30 @@
 
 static const unsigned int UNSELECTED = 0;
 
-enum class Difficulty : int
-{
+enum class GameLevel : int {
     EASY = 1,
     NORMAL,
     HARD
 };
 
-enum class State : int
-{
+enum class State : int {
     INITED = 0,
     ERASED,
 };
 
-using point_t = struct point_t {
+typedef struct {
     int x;
     int y;
-};
+} Point;
 
 using point_value_t = struct point_value_t {
     int value;
     State state;
 };
 
-class CPointSort
-{
+class CPointSort {
   public:
-    bool operator()(const point_t &lhs, const point_t &rhs) const
-    {
+    bool operator()(const Point &lhs, const Point &rhs) const {
         if ((lhs.x == rhs.x) && (lhs.y == rhs.y))
             return false;
         else
