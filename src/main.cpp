@@ -1,6 +1,4 @@
 ﻿#include <iostream>
-#include <string>
-#include <cstring>
 #include "../include/board.h"
 #include "../include/setup.h"
 #include "../include/test.h"
@@ -24,10 +22,8 @@ int main(int argc, char **argv) {
     getchar();
 #else
     if (argc == 1) {
-        int numErase = setLevel();
-        Board board;
+        Board board(setLevel());
         board.generate();
-        board.randomErase(numErase);
         board.play();
     } else {
         printHelp();

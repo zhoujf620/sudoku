@@ -2,7 +2,6 @@
 #include "../include/test.h"
 
 void test_case() {
-    Board board;
+    Board board(10);
     board.generate();
-    board.show();
 }

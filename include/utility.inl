@@ -1,19 +1,7 @@
 ﻿#ifndef _SUDOKU_UTILITY_INL_
 #define _SUDOKU_UTILITY_INL_
 
-#include <cassert>
-#include <chrono>
 #include <random>
-#include <algorithm>
-
-static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-
-//not real random,return number between [begin,end]
-inline unsigned int random(int begin, int end) {
-    assert(end >= begin && begin >= 0);
-    srand(time(NULL));
-    return (unsigned int)rand() % (end - begin + 1) + begin;
-}
 
 template<typename T>
 inline void random_shuffle(std::vector<T> &v){
@@ -25,7 +13,7 @@ inline void random_shuffle(std::vector<T> &v){
 #else
 #include <termios.h>
 #include <cstdio>
-inline char getch(void) {
+inline char getch(void) { // XXX
     struct termios tmtemp, tm;
     char c;
     int fd = 0;
