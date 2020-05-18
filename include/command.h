@@ -8,22 +8,22 @@ class Board;
 class CCommand {
 public:
     CCommand(Board* pOwner);
-    CCommand(Board *pOwner, const Point &point, int preValue, int curValue);
+    CCommand(Board *pOwner, const Coord &point, int preValue, int curValue);
     CCommand(const CCommand &);
     ~CCommand();
 
     bool execute(int nInputValue);
     void undo();
-    Point getPoint() { return _stPoint; }
+    Coord getPoint() { return _stPoint; }
     int getPreValue() { return _nPreValue; }
     int getCurValue() { return _nCurValue; }
-    void setPoint(const Point &point) { _stPoint = point; }
+    void setPoint(const Coord &point) { _stPoint = point; }
     void setPreValue(int preValue) { _nPreValue = preValue; }
     void setCurValue(int curValue) { _nCurValue = curValue; }
 
 private:
     Board* _pOwner;
-    Point _stPoint;
+    Coord _stPoint;
     int _nPreValue;
     int _nCurValue;  // actually the member is never used
 };

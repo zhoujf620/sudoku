@@ -1,12 +1,10 @@
-﻿#include <cmath>
-#include <iostream>
-#include <fstream>
+﻿#include <iostream>
 #include <memory.h>
 #include <unordered_map>
 #include <vector>
-#include "common.h"
-#include "board.h"
-#include "utility.inl"
+#include "../include/common.h"
+#include "../include/board.h"
+#include "../include/utility.inl"
 
 Board::Board() {
     __init();
@@ -41,7 +39,7 @@ void Board::generate() {
     // 填入场景
     for (int row = 0; row < 9; ++row) {
         for (int col = 0; col < 9; ++col) {
-            Point point = {row, col};
+            Coord point = {row, col};
             char key = board_case[row][col];
             __setValue(point, char2int[key]);
         }
@@ -49,6 +47,22 @@ void Board::generate() {
 
     assert(isComplete());
     return;
+}
+
+void Board::randomErase(const int count) {
+    Cell cell = {0, State::ERASED};
+
+    // TODO 蓄水池算法
+    std::vector<int> v(81);
+    for (int i = 0; i < 81; ++i) {
+        v[i] = i;
+    }
+
+    for (int i = 0; i < count; ++i) {
+        int r = random(0, v.size() - 1);
+        map_[v[r]] = cell;
+        v.erase(v.begin() + r);
+    }
 }
 
 void Board::show() const {
@@ -60,67 +74,6 @@ void Board::show() const {
         block.rowPrint();
         __printUnderline(row);
     }
-}
-
-bool Board::setCurValue(const int nCurValue, int &nLastValue) {
-    auto point = map_[cur_point_.x + cur_point_.y * 9];
-    if (point.state == State::ERASED) {
-        nLastValue = point.value;
-        __setValue(nCurValue);
-        return true;
-    }
-    else
-        return false;
-}
-
-bool Board::setPointValue(const Point &stPoint, const int nValue) {
-    auto point = map_[stPoint.x + stPoint.y * 9];
-    if (State::ERASED == point.state) {
-        cur_point_ = stPoint;
-        __setValue(nValue);
-        return true;
-    }
-    else
-        return false;
-}
-
-Point Board::getCurPoint() {
-    return cur_point_;
-}
-
-void Board::randomErase(const int count) {
-    point_value_t p = {0, State::ERASED};
-
-    std::vector<int> v(81);
-    for (int i = 0; i < 81; ++i) {
-        v[i] = i;
-    }
-
-    for (int i = 0; i < count; ++i) {
-        int r = random(0, v.size() - 1);
-        map_[v[r]] = p;
-        v.erase(v.begin() + r);
-    }
-}
-
-bool Board::isComplete() {
-    // 任何一个block未被填满，则肯定未完成
-    for (size_t i = 0; i < 81; ++i) {
-        if (map_[i].value == 0)
-            return false;
-    }
-
-    // 同时block里的数字还要符合规则
-    for (size_t row = 0; row < 9; ++row) {
-        for (size_t col = 0; col < 9; ++col) {
-            if (!row_block_[row].isValid() || 
-                !col_block_[col].isValid() || 
-                !sub_block_[row / 3][col / 3].isValid())
-                return false;
-        }
-    }
-
-    return true;
 }
 
 void Board::play() {
@@ -141,18 +94,11 @@ void Board::play() {
         }
 
         switch (key) {
-            case 0x1B: {// ESC  
+            case 0x1B: {    // ESC  
                 std::cout << "quit game ? [Y/N]" << std::endl;
                 std::string strInput;
                 std::cin >> strInput;
                 if (strInput[0] == 'y' || strInput[0] == 'Y') {
-                    std::cout << "do you want to save the game progress ? [Y/N]" << std::endl;
-                    std::cin >> strInput;
-                    if (strInput[0] == 'y' || strInput[0] == 'Y') {
-                        std::cout << "input path of the progress file: ";
-                        std::cin >> strInput;
-                        save(strInput.c_str());
-                    }
                     exit(0);
                 } else {
                     std::cout << "continue." << std::endl;
@@ -202,55 +148,45 @@ void Board::play() {
     }
 }
 
-void Board::save(const char *filename) {
-    std::fstream fs;
-    // TODO: check whether the file has existed
-    fs.open(filename, std::fstream::in | std::fstream::out | std::fstream::app);
-
-    // save map_
-    for (int i = 0; i < 81; i++) {
-        fs << map_[i].value << ' ' << static_cast<int>(map_[i].state) << std::endl;
+bool Board::isComplete() {
+    for (int i = 0; i < 81; ++i) {
+        if (map_[i].value == 0)
+            return false;
     }
 
-    // save cur_point_
-    fs << cur_point_.x << ' ' << cur_point_.y << std::endl;
-
-    // save vCommand_
-    fs << vCommand_.size() << std::endl;
-    for (CCommand command : vCommand_) {
-        Point point = command.getPoint();
-        fs << point.x << ' ' << point.y << ' '
-           << command.getPreValue() << ' '
-           << command.getCurValue() << std::endl;
+    for (int i = 0; i < 9; ++i) {
+        if (!row_block_[i].isValid() ||
+            !col_block_[i].isValid() ||
+            !sub_block_[i / 3][i % 3].isValid()) 
+            return false;
     }
-
-    fs.close();
+    return true;
 }
 
-void Board::load(const char *filename) {
-    std::fstream fs;
-    // TODO: check whether the file has existed
-    fs.open(filename, std::fstream::in | std::fstream::out | std::fstream::app);
-
-    // load map_
-    for (int i = 0; i < 81; i++) {
-        int tmpState;
-        fs >> map_[i].value >> tmpState;
-        map_[i].state = static_cast<State>(tmpState);
+bool Board::setCurValue(const int nCurValue, int &nLastValue) {
+    auto point = map_[cur_point_.x + cur_point_.y * 9];
+    if (point.state == State::ERASED) {
+        nLastValue = point.value;
+        __setValue(nCurValue);
+        return true;
     }
+    else
+        return false;
+}
 
-    // load cur_point_
-    fs >> cur_point_.x >> cur_point_.y;
-
-    // load vCommand_
-    int commandSize;
-    fs >> commandSize;
-    for (int i = 0; i < commandSize; i++) {
-        Point point;
-        int preValue, curValue;
-        fs >> point.x >> point.y >> preValue >> curValue;
-        vCommand_.emplace_back(this, point, preValue, curValue);
+bool Board::setPointValue(const Coord &stPoint, const int nValue) {
+    auto point = map_[stPoint.x + stPoint.y * 9];
+    if (State::ERASED == point.state) {
+        cur_point_ = stPoint;
+        __setValue(nValue);
+        return true;
     }
+    else
+        return false;
+}
+
+Coord Board::getCurPoint() {
+    return cur_point_;
 }
 
 void Board::__printUnderline(int line_no) const {
@@ -310,7 +246,7 @@ void Board::__init() {
     return;
 }
 
-void Board::__setValue(const Point& p, const int value) {
+void Board::__setValue(const Coord& p, const int value) {
     map_[p.x + p.y * 9].value = value;
 }
 

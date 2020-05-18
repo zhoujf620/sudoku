@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 #include <string>
-#include "common.h"
-#include "utility.inl"
+#include "../include/common.h"
+#include "../include/utility.inl"
 
 // return number of grids to be erased
 int setLevel() {

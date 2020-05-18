@@ -1,9 +1,9 @@
 ﻿#include <iostream>
 #include <string>
 #include <cstring>
-#include "board.h"
-#include "setup.h"
-#include "test.h"
+#include "../include/board.h"
+#include "../include/setup.h"
+#include "../include/test.h"
 
 #define _TEST_ 0
 
@@ -23,23 +23,16 @@ int main(int argc, char **argv) {
     test_case();
     getchar();
 #else
-    Board board;
-
     if (argc == 1) {
+        Board board;
         int numErase = setLevel();
         board.generate();
         board.randomErase(numErase);
-    }
-    else if (argc == 3 && !strcmp(argv[1], "-l")) {
-        // load saved game progress
-        board.load(argv[2]);
-    }
-    else {
+        board.play();
+    } else {
         printHelp();
         return 0;
     }
-
-    board.play();
 #endif
     return 0;
 }

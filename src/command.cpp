@@ -1,10 +1,10 @@
-﻿#include "board.h"
-#include "command.h"
+﻿#include "../include/board.h"
+#include "../include/command.h"
 
 CCommand::CCommand(Board *pOwner) : _pOwner(pOwner)
 {}
 
-CCommand::CCommand(Board *pOwner, const Point &point, int preValue, int curValue)
+CCommand::CCommand(Board *pOwner, const Coord &point, int preValue, int curValue)
     : _pOwner(pOwner), _stPoint(point), _nPreValue(preValue), _nCurValue(curValue) {}
 
 CCommand::CCommand(const CCommand &rhs)
