@@ -24,8 +24,8 @@ int main(int argc, char **argv) {
     getchar();
 #else
     if (argc == 1) {
-        Board board;
         int numErase = setLevel();
+        Board board;
         board.generate();
         board.randomErase(numErase);
         board.play();

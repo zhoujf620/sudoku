@@ -24,7 +24,6 @@ class Board {
     Coord getCurPoint();
 
   private:
-    void __init(); // 将每个格子的指针放到block里面
     void __setValue(const int);
     void __setValue(const Coord &, const int);
     void __printUnderline(int line_no = -1) const;
@@ -33,7 +32,7 @@ class Board {
     Block row_block_[9];
     Block col_block_[9];
     Block sub_block_[3][3];
-    Cell map_[81];
+    Cell board_[81];
     std::vector<CCommand> vCommand_;
 };
 

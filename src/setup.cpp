@@ -14,6 +14,8 @@ int setLevel() {
         GameLevel level = static_cast<GameLevel>(std::stoi(cmd));
 
         switch (level) {
+            case GameLevel:: TEST:
+                return 1;
             case GameLevel::EASY:
                 return 20;
             case GameLevel::NORMAL:

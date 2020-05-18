@@ -2,7 +2,8 @@
 #define _SUDOKU_COMMON_H_
 
 enum class GameLevel : int {
-    EASY = 1,
+    TEST = 0,
+    EASY,
     NORMAL,
     HARD
 };
@@ -11,14 +12,9 @@ typedef struct {
     int y;
 } Coord;
 
-enum class State : int {
-    INITED = 0,
-    ERASED,
-};
-
 typedef struct {
     int value;
-    State state;
+    bool erased;
 } Cell;
 
 #endif

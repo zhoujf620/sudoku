@@ -1,18 +1,19 @@
 ﻿#ifndef _SUDOKU_BLOCK_H_
 #define _SUDOKU_BLOCK_H_
 
-#include <vector>
 #include "common.h"
 
 class Block {
-    static const int NUM_POINT_ = 9;
+    static const int NUM_CELL_ = 9;
   public:
+    Block();
     bool isValid() const;
     void rowPrint() const;
     void push_back(Cell *cell);
 
   private:
-    std::vector<Cell*> block_;
+    int idx_;
+    Cell* block_[NUM_CELL_];
 };
 
 #endif
