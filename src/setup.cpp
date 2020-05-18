@@ -1,11 +1,10 @@
 ﻿#include <iostream>
-#include <sstream>
 #include <string>
 #include "common.h"
 #include "utility.inl"
 
 // return number of grids to be erased
-int inputDifficulty() {
+int setLevel() {
     cls();
 
     std::string cmd;
@@ -15,15 +14,15 @@ int inputDifficulty() {
         GameLevel level = static_cast<GameLevel>(std::stoi(cmd));
 
         switch (level) {
-        case GameLevel::EASY:
-            return 20;
-        case GameLevel::NORMAL:
-            return 35;
-        case GameLevel::HARD:
-            return 50;
-        default:
-            std::cout << "输入错误！" << std::endl;
-            continue;
+            case GameLevel::EASY:
+                return 20;
+            case GameLevel::NORMAL:
+                return 35;
+            case GameLevel::HARD:
+                return 50;
+            default:
+                std::cout << "输入错误！" << std::endl;
+                continue;
         }
     }
 

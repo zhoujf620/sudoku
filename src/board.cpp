@@ -14,10 +14,8 @@ Board::Board() {
 
 Board::~Board() {}
 
-// 一个场景可以多次被初始化
 void Board::generate() {
-    // XXX: pseudo random
-    static char map_pattern[10][10] = {
+    static char board_case[10][10] = {
         "ighcabfde",
         "cabfdeigh",
         "fdeighcab",
@@ -29,22 +27,23 @@ void Board::generate() {
         "efdhigbca"
     };
 
-    std::vector<char> v = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'};
-
+    std::vector<char> chars{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'};
+    
+    // TODO: shuffle
+    std::unordered_map<char, int> char2int;
     // 产生字母到数字的随机映射
-    std::unordered_map<char, int> hash_map;
     for (int i = 1; i <= 9; ++i) {
-        int r = random(0, v.size() - 1);
-        hash_map[v[r]] = i;
-        v.erase(v.begin() + r);
+        int idx = random(0, chars.size() - 1);
+        char2int[chars[idx]] = i;
+        chars.erase(chars.begin() + idx);
     }
 
     // 填入场景
     for (int row = 0; row < 9; ++row) {
         for (int col = 0; col < 9; ++col) {
             Point point = {row, col};
-            char key = map_pattern[row][col];
-            __setValue(point, hash_map[key]);
+            char key = board_case[row][col];
+            __setValue(point, char2int[key]);
         }
     }
 
@@ -56,10 +55,9 @@ void Board::show() const {
     cls();
 
     __printUnderline();
-
-    for (int row = 0; row < max_column_; ++row) {
+    for (int row = 0; row < BOARD_SIZE_; ++row) {
         Block block = row_block_[row];
-        block.print();
+        block.rowPrint();
         __printUnderline(row);
     }
 }
@@ -90,9 +88,8 @@ Point Board::getCurPoint() {
     return cur_point_;
 }
 
-// 选择count个格子清空
-void Board::eraseRandomGrids(const int count) {
-    point_value_t p = {UNSELECTED, State::ERASED};
+void Board::randomErase(const int count) {
+    point_value_t p = {0, State::ERASED};
 
     std::vector<int> v(81);
     for (int i = 0; i < 81; ++i) {
@@ -109,7 +106,7 @@ void Board::eraseRandomGrids(const int count) {
 bool Board::isComplete() {
     // 任何一个block未被填满，则肯定未完成
     for (size_t i = 0; i < 81; ++i) {
-        if (map_[i].value == UNSELECTED)
+        if (map_[i].value == 0)
             return false;
     }
 
@@ -275,30 +272,30 @@ void Board::__printUnderline(int line_no) const {
 }
 
 void Board::__init() {
-    memset(map_, UNSELECTED, sizeof(map_));
+    memset(map_, 0, sizeof(map_));
 
     // column_block 所有列
-    for (int col = 0; col < max_column_; ++col) {
-        Block column_block;
+    for (int col = 0; col < BOARD_SIZE_; ++col) {
+        Block col_block;
 
-        for (int row = 0; row < max_column_; ++row) {
-            column_block.push_back(map_ + row * 9 + col);
+        for (int row = 0; row < BOARD_SIZE_; ++row) {
+            col_block.push_back(map_ + row * 9 + col);
         }
-        col_block_[col] = column_block;
+        col_block_[col] = col_block;
     }
 
     // row_block 所有行
-    for (int row = 0; row < max_column_; ++row) {
+    for (int row = 0; row < BOARD_SIZE_; ++row) {
         Block row_block;
 
-        for (int col = 0; col < max_column_; ++col) {
+        for (int col = 0; col < BOARD_SIZE_; ++col) {
             row_block.push_back(map_ + row * 9 + col);
         }
         row_block_[row] = row_block;
     }
 
     // sub_block 所有九宫格, [行][列]
-    for (int block_index = 0; block_index < max_column_; ++block_index) {
+    for (int block_index = 0; block_index < BOARD_SIZE_; ++block_index) {
         Block sub_block;
 
         int xy_begin = block_index / 3 * 27 + block_index % 3 * 3;

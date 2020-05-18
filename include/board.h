@@ -7,6 +7,7 @@
 #include "command.h"
 
 class Board {
+    static const int BOARD_SIZE_ = 9;
   public:
     Board();
     virtual ~Board();
@@ -18,7 +19,7 @@ class Board {
     bool setPointValue(const Point&, const int nValue);
     Point getCurPoint();
 
-    void eraseRandomGrids(const int count);
+    void randomErase(const int count);
     bool isComplete();
 
     void play();
@@ -31,7 +32,6 @@ class Board {
     void __setValue(const Point &, const int);
     void __printUnderline(int line_no = -1) const;
 
-    const int max_column_ = 9;
     Point cur_point_{0, 0};
     Block row_block_[9];
     Block col_block_[9];

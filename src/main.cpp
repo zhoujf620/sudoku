@@ -26,9 +26,9 @@ int main(int argc, char **argv) {
     Board board;
 
     if (argc == 1) {
-        int eraseGridNumber = inputDifficulty();
+        int numErase = setLevel();
         board.generate();
-        board.eraseRandomGrids(eraseGridNumber);
+        board.randomErase(numErase);
     }
     else if (argc == 3 && !strcmp(argv[1], "-l")) {
         // load saved game progress
