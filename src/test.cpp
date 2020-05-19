@@ -2,6 +2,6 @@
 #include "../include/test.h"
 
 void test_case() {
-    Board board(10);
-    board.generate();
+    Board* board = Board::getBoard(10);
+    board->generate();
 }

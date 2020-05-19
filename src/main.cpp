@@ -22,9 +22,9 @@ int main(int argc, char **argv) {
     getchar();
 #else
     if (argc == 1) {
-        Board board(setLevel());
-        board.generate();
-        board.play();
+        Board* board = Board::getBoard(setLevel());
+        board->generate();
+        board->play();
     } else {
         printHelp();
         return 0;

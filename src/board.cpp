@@ -7,7 +7,13 @@
 #include "../include/board.h"
 #include "../include/utility.inl"
 
-// TODO 单例模式
+Board* Board::instance_ = nullptr;
+Board* Board::getBoard(int numErase) {
+    if (nullptr == instance_) 
+        instance_ = new Board(numErase);
+    return instance_;
+}
+
 Board::Board(int numErase) : numErase_(numErase) {
     srand(time(NULL));
     memset(board_, 0, sizeof(board_));
@@ -43,8 +49,6 @@ Board::Board(int numErase) : numErase_(numErase) {
     }
 }
 
-Board::~Board() {}
-
 void Board::generate() {
     static char board_case[10][10] = {
         "ighcabfde",
@@ -62,7 +66,7 @@ void Board::generate() {
     random_shuffle(chars);
     
     std::unordered_map<char, int> char2int;
-    for (int i = 0; i < chars.size(); ++i) char2int[chars[i]] = i + 1;
+    for (size_t i = 0; i < chars.size(); ++i) char2int[chars[i]] = i + 1;
     
     for (int row = 0; row < BOARD_SIZE_; ++row) {
         for (int col = 0; col < BOARD_SIZE_; ++col) {
@@ -174,7 +178,7 @@ void Board::__randomErase() {
     std::iota(nums.begin(), nums.end(), 0);
 
     std::vector<int> samples(nums.begin(), nums.begin() + numErase_);
-    for (int i = numErase_; i < nums.size(); ++i) {
+    for (size_t i = numErase_; i < nums.size(); ++i) {
         int j = rand() % (i + 1);
         if (j < numErase_)
             samples[j] = nums[i];

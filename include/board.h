@@ -5,15 +5,15 @@
 #include "block.h"
 
 class Board {
-    static const int BOARD_SIZE_ = 9;
   public:
-    Board(int);
-    virtual ~Board();
-
+    static Board* getBoard(int);
     void generate();
     void play();
 
   private:
+    Board(int);
+    static Board *instance_;
+
     void __show() const;
     void __printUnderline(int line_no = -1) const;
     void __randomErase();
@@ -22,6 +22,7 @@ class Board {
     void __setValue(const int);
     void __setValue(const Coord &, const int);
 
+    static const int BOARD_SIZE_ = 9;
     const int numErase_;
     Coord cur_coord_{0, 0};
     Block row_block_[9];
